@@ -15,5 +15,6 @@ build_job:
   script:
     - sh ./dev/linter.sh
     - python setup.py build develop
+    - cd tests
     - python testcpu.py    # run examples and gradient check on cpu
     - python testcuda.py   # run examples and gradient check on gpu 
