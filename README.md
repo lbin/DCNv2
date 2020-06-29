@@ -1,8 +1,13 @@
 ## Deformable Convolutional Networks V2 with Pytorch 1.X
 
 ### Build
+
 ```bash
     python setup.py build develop         # build
+```
+or
+```bash
+    pip install -U 'git+ssh://git@192.168.253.179:2222/icd/dcnv2.git'
 ```
 
 ### Known Issues:
