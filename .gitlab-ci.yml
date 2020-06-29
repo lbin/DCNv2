@@ -1,0 +1,19 @@
+image: 192.168.231.192:5000/pytorch:py3-pytorch_1.5.0-10.2-cudnn7
+
+before_script:
+  - df -h /dev/shm
+  - python --version
+
+stages:
+  - build
+
+build_job:
+  tags:
+    - gpu-ci
+  stage: build
+
+  script:
+    - sh ./dev/linter.sh
+    - python setup.py build develop
+    - python testcpu.py    # run examples and gradient check on cpu
+    - python testcuda.py   # run examples and gradient check on gpu 
