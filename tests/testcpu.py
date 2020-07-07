@@ -102,6 +102,7 @@ def check_gradient_dconv():
             eps=1e-3,
             atol=1e-4,
             rtol=1e-2,
+            raise_exception=False,
         ),
     )
 
@@ -179,6 +180,7 @@ def check_gradient_dpooling():
                 trans_std,
             ),
             eps=1e-4,
+            raise_exception=False,
         ),
     )
 

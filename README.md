@@ -24,3 +24,28 @@ float `<1e-15` for double),
 so it may not be a serious problem (?)
 
 Please post an issue or PR if you have any comments.
+
+# About TRT Plugin
+
+插件本身适用于TensorRT 7版本，在TensorRT的`onnxparser`中被解析为序列化的`TRT_PluginV2`层加入网络。
+
+## Build
+
+插件代码位于`trt_plugin`. 
+
+```bash
+mkdir build
+cd build
+cmake ../trt_plugin -DCMAKE_BUILD_TYPE=Release
+make -j
+```
+
+## Usage & Test
+
+依赖于`onnx_graphsurgeon`
+
+可在[https://github.com/NVIDIA/TensorRT.git]下载到此工具的源码。
+不出意外的话它应该自TensorRT 7.1.3起进入官方安装包。
+**编译和安装此工具不依赖TensorRT的版本。**
+
+用例和测试见`tests/testplugin.py`。
