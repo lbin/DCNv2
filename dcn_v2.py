@@ -65,6 +65,30 @@ class _DCNv2(Function):
 
         return grad_input, grad_offset, grad_mask, grad_weight, grad_bias, None, None, None, None
 
+    @staticmethod
+    def symbolic(
+        g, input, offset, mask, weight, bias, stride, padding, dilation, deformable_groups
+    ):
+        from torch.nn.modules.utils import _pair
+
+        stride = _pair(stride)
+        padding = _pair(padding)
+        dilation = _pair(dilation)
+        # as of trt 7, the dcn operation will be translated again by modifying the onnx file
+        # so the exporting code is kept to resemble the forward()
+        return g.op(
+            "DCNv2_2",
+            input,
+            offset,
+            mask,
+            weight,
+            bias,
+            stride_i=stride,
+            padding_i=padding,
+            dilation_i=dilation,
+            deformable_groups_i=deformable_groups,
+        )
+
 
 dcn_v2_conv = _DCNv2.apply
 

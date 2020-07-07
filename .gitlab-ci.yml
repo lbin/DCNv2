@@ -1,8 +1,8 @@
-image: 192.168.231.192:5000/pytorch:py3-pytorch_1.5.0-10.2-cudnn7
+image: 192.168.231.192:5000/deepstream-ci:5.0-py3-torch1.4.0
 
 before_script:
   - df -h /dev/shm
-  - python --version
+  - python3 --version
 
 stages:
   - build
@@ -14,7 +14,10 @@ build_job:
 
   script:
     - sh ./dev/linter.sh
-    - python setup.py build develop
+    - python3 setup.py build develop
+    - mkdir -p build && cmake -S trt_plugin -B build -G "Unix Makefiles" && make -C build
+    - python3 -m pip install onnx_graphsurgeon-0.2.3-py2.py3-none-any.whl
     - cd tests
-    - python testcpu.py    # run examples and gradient check on cpu
-    - python testcuda.py   # run examples and gradient check on gpu 
+    - python3 testcpu.py    # run examples and gradient check on cpu
+    - python3 testcuda.py   # run examples and gradient check on gpu 
+    - python3 testplugin.py
