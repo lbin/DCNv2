@@ -321,12 +321,18 @@ std::vector<at::Tensor> dcn_v2_cuda_backward(const at::Tensor &input,
         // gradient w.r.t. bias
         // long m_ = channels_out;
         // long k__ = height_out * width_out;
-        THCudaBlas_Sgemv(state,
-                         't',
-                         k_, m_, 1.0f,
-                         grad_output_n.data<scalar_t>(), k_,
-                         ones.data<scalar_t>(), 1, 1.0f,
-                         grad_bias.data<scalar_t>(), 1);
+        // THCudaBlas_Sgemm(state,
+        //                  't', 'n',
+        //                  k_, m_, 1, 1.0f,
+        //                  grad_output_n.data<scalar_t>(), k_,
+        //                  ones.data<scalar_t>(), 1, 1.0f,
+        //                  grad_bias.data<scalar_t>(), 1);
+        THCudaBlas_Sgemm(state,
+            'N', 'N', 1, m_, k_, 1.0f,
+            ones.data<scalar_t>(), 1,
+            grad_output_n.data<scalar_t>(), k_,
+            1.0f,
+            grad_bias.data<scalar_t>(), 1);
     }
 
     return {
