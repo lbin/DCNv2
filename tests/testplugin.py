@@ -6,12 +6,12 @@ import os
 import sys
 import tempfile
 
-import onnx
-import onnx_graphsurgeon as gs
 import packaging.version as pver
-import tensorrt as trt
 import torch
 
+import onnx
+import onnx_graphsurgeon as gs
+import tensorrt as trt
 from dcn_v2 import DCN
 
 deformable_groups = 1
@@ -28,12 +28,8 @@ network_creation_flag = 0
 network_creation_flag |= 1 << int(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)
 
 
-def convert_engine(
-    onnx_fn, engine_fn, batch_size, fp16=True, int8_calibrator=None, workspace=4_000_000_000
-):
-    with trt.Builder(TRT_LOGGER) as builder, builder.create_network(
-        network_creation_flag
-    ) as network, trt.OnnxParser(network, TRT_LOGGER) as parser:
+def convert_engine(onnx_fn, engine_fn, batch_size, fp16=True, int8_calibrator=None, workspace=4_000_000_000):
+    with trt.Builder(TRT_LOGGER) as builder, builder.create_network(network_creation_flag) as network, trt.OnnxParser(network, TRT_LOGGER) as parser:
         builder.max_workspace_size = workspace
         builder.max_batch_size = batch_size
         builder.fp16_mode = fp16
@@ -128,20 +124,14 @@ def convert_dcn_node_to_plugin(node):
     # print(val_inputs)
 
     fields = [
-        trt.PluginField(
-            name="weight", data=val_inputs["weight"].tobytes(), type=trt.PluginFieldType.FLOAT32
-        ),
-        trt.PluginField(
-            name="bias", data=val_inputs["bias"].tobytes(), type=trt.PluginFieldType.FLOAT32
-        ),
+        trt.PluginField(name="weight", data=val_inputs["weight"].tobytes(), type=trt.PluginFieldType.FLOAT32),
+        trt.PluginField(name="bias", data=val_inputs["bias"].tobytes(), type=trt.PluginFieldType.FLOAT32),
         trt.PluginField(
             name="kernel_shape",
             data=iterable2bytes(val_inputs["weight"].shape),
             type=trt.PluginFieldType.INT32,
         ),
-        trt.PluginField(
-            name="stride", data=iterable2bytes(node.attrs["stride"]), type=trt.PluginFieldType.INT32
-        ),
+        trt.PluginField(name="stride", data=iterable2bytes(node.attrs["stride"]), type=trt.PluginFieldType.INT32),
         trt.PluginField(
             name="padding",
             data=iterable2bytes(node.attrs["padding"]),

@@ -44,9 +44,7 @@ def check_zero_offset():
         bias=True,
     ).cuda()
 
-    dcn_v2 = DCNv2(
-        inC, outC, (kH, kW), stride=1, padding=1, dilation=1, deformable_groups=deformable_groups
-    ).cuda()
+    dcn_v2 = DCNv2(inC, outC, (kH, kW), stride=1, padding=1, dilation=1, deformable_groups=deformable_groups).cuda()
 
     conv_offset.weight.data.zero_()
     conv_offset.bias.data.zero_()
@@ -102,7 +100,6 @@ def check_gradient_dconv():
             eps=1e-3,
             atol=1e-4,
             rtol=1e-2,
-            raise_exception=False,
         ),
     )
 
@@ -112,7 +109,16 @@ def check_pooling_zero_offset():
     input = torch.randn(2, 16, 64, 64).cuda().zero_()
     input[0, :, 16:26, 16:26] = 1.0
     input[1, :, 10:20, 20:30] = 2.0
-    rois = torch.tensor([[0, 65, 65, 103, 103], [1, 81, 41, 119, 79]]).cuda().float()
+    rois = (
+        torch.tensor(
+            [
+                [0, 65, 65, 103, 103],
+                [1, 81, 41, 119, 79],
+            ]
+        )
+        .cuda()
+        .float()
+    )
     pooling = DCNv2Pooling(
         spatial_scale=1.0 / 4,
         pooled_size=7,
@@ -141,7 +147,7 @@ def check_pooling_zero_offset():
 
 
 def check_gradient_dpooling():
-    input = torch.randn(2, 3, 5, 5).cuda() * 0.01
+    input = torch.randn(2, 3, 5, 5).cuda().float() * 0.01
     N = 4
     batch_inds = torch.randint(2, (N, 1)).cuda().float()
     x = torch.rand((N, 1)).cuda().float() * 15
@@ -180,7 +186,6 @@ def check_gradient_dpooling():
                 trans_std,
             ),
             eps=1e-4,
-            raise_exception=False,
         ),
     )
 

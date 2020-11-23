@@ -1,33 +1,28 @@
 #!/bin/bash -e
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+# Copyright (c) Facebook, Inc. and its affiliates.
 
 # Run this script at project root by "./dev/linter.sh" before you commit
 
-vergte() {
-  [ "$2" = "$(echo -e "$1\\n$2" | sort -V | head -n1)" ]
-}
-
 {
-	black --version | grep "19.3b0" > /dev/null
+  black --version | grep -E "20.8b1" > /dev/null
 } || {
-	echo "Linter requires black==19.3b0 !"
-	exit 1
-}
-
-ISORT_TARGET_VERSION="4.3.21"
-ISORT_VERSION=$(isort -v | grep VERSION | awk '{print $2}')
-vergte "$ISORT_VERSION" "$ISORT_TARGET_VERSION" || {
-  echo "Linter requires isort>=${ISORT_TARGET_VERSION} !"
+  echo "Linter requires 'black==20.8b1' !"
   exit 1
 }
+
+ISORT_VERSION=$(isort --version-number)
+if [[ "$ISORT_VERSION" != 4.3* ]]; then
+  echo "Linter requires isort==4.3.21 !"
+  exit 1
+fi
 
 set -v
 
 echo "Running isort ..."
-isort -y -sp . --atomic
+isort -sp . --atomic
 
 echo "Running black ..."
-black -l 100 .
+black -l 180 .
 
 echo "Running flake8 ..."
 if [ -x "$(command -v flake8-3)" ]; then
@@ -38,7 +33,7 @@ fi
 
 # echo "Running mypy ..."
 # Pytorch does not have enough type annotations
-# mypy aifwdet/solver aifwdet/structures aifwdet/config
+# mypy detectron2/solver detectron2/structures detectron2/config
 
 # echo "Running clang-format ..."
 # find . -regex ".*\.\(cpp\|c\|cc\|cu\|cxx\|h\|hh\|hpp\|hxx\|tcc\|mm\|m\)" -print0 | xargs -0 clang-format -i
