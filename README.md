@@ -63,7 +63,7 @@ so it may not be a serious problem (?)
 
 Please post an issue or PR if you have any comments.
 
-<!---->
-## ✨ Star History
-[![Star History](https://api.star-history.com/svg?repos=/lbin/DCNv2&type=Date)](https://star-history.com/#lbin/DCNv2&Date)
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=lbin/DCNv2&type=Date)](https://star-history.com/#lbin/DCNv2&Date)
     
