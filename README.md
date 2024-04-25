@@ -62,4 +62,8 @@ float `<1e-15` for double),
 so it may not be a serious problem (?)
 
 Please post an issue or PR if you have any comments.
+
+<!---->
+## ✨ Star History
+[![Star History](https://api.star-history.com/svg?repos=/lbin/DCNv2&type=Date)](https://star-history.com/#lbin/DCNv2&Date)
     
